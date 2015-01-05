@@ -70,7 +70,8 @@ if($containers = getContainers()){
 /* Quick functions */
 function getContainers(){
     $api = 'http://172.17.42.1:2375/containers/json';
-    $api = 'http://192.168.59.103:2375/containers/json';
+    /* Debugging with boot2docker */
+    //$api = 'http://192.168.59.103:2375/containers/json';
     _log('Fetching containers using Docker remote API: ' . $api );
     _log('Is socat running? If not try: $(docker run sequenceiq/socat)', 'QUESTION');
     $containers = json_decode(trim(`curl -s $api`), TRUE);
