@@ -47,3 +47,13 @@ Step 4:
 Anytime you add new containers, simply restart the automagic proxy to discover the new containers. If you call it via docker exec, you should have 0 downtime!
 
     docker exec -t -i automagicproxy /automagicproxy/bin/reload
+
+**Additional Goodies**
+
+If you set an environment variable before running the container, or before running the reload command called "AUTOMAGIC_PORTS" with a comma separated list of ports. It will use those ports along with port 80, in haproxy's configuration. 
+
+You can see from the container list above, that there is another container called "vitaminc" running on port 9999. It's done this way for other various reasons. However, when we first start the automagicproxy container, it will not configure this particular container, because it's private port is not port 80. By setting the environment variable "AUTOMAGIC_PORTS=9999,1234,<other_ports_here>" will allow vitaminc.dev.com to be configured along with those on private port 80. 
+
+An example setup to include port 9999 in the configuration would look like this:
+
+    docker run -d -p 80:80 -e AUTOMAGIC_PORTS=9999 --name automagicproxy kcmerrill/automagicproxy
