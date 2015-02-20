@@ -29,7 +29,7 @@ foreach($ports as $p){
 
 /* Save a spot for our configuration */
 $web_containers = array();
-$frontend_config = $backend_config = '';
+$frontend = $backend = '';
 
 /* Giddy Up */
 if($containers = getContainers()){
@@ -42,6 +42,29 @@ if($containers = getContainers()){
                 if(isset($c_port['PublicPort'])){
                     $web_containers[$c_name] = $c_port['PublicPort'];
                     _log($c_name . '* -> 172.17.42.1:' . $c_port['PublicPort'], 'WEB');
+                }
+            }
+        }
+    }
+
+    /* Now we have the containers, lets see if we were given any configuration files */
+    $mappings_dir = __DIR__ . '/../config/';
+    $mappings = scandir($mappings_dir);
+    foreach($mappings as $mapping) {
+        if($mapping == '.' || $mapping == '..'){
+            continue;
+        } else {
+            $contents = file_get_contents($mappings_dir . $mapping);
+            $contents = explode("\n", $contents);
+            foreach($contents as $map) {
+                if(strpos($map, ':') === FALSE) {
+                    continue;
+                } else {
+                    list($incoming, $container) = explode(':', $map);
+                    if(isset($web_containers[$container])){
+                        $web_containers[$incoming] = $web_containers[$container];
+                        _log($incoming . '* -> 172.17.42.1:' . $web_containers[$container], 'WEB');
+                    }
                 }
             }
         }
