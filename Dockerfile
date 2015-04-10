@@ -1,5 +1,5 @@
 #Build the haproxy container, add php, run a custom script to make it automagical
-FROM dockerfile/haproxy
+FROM haproxy
 MAINTAINER kc merrill <kcmerrill@gmail.com>
 
 RUN apt-get -y update
