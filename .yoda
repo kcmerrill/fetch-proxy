@@ -3,9 +3,10 @@ docker-http:
  pull: true
  p: 2375:2375
  v: /var/run/docker.sock:/var/run/docker.sock
+ remove: true
 automagicproxy:
  image: kcmerrill/automagicproxy
- pull: dockerfile/haproxy
+ pull: haproxy
  build: .
  remove: true
  p: 80:80
