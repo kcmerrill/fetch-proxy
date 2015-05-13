@@ -10,11 +10,15 @@
 
 /* Setup the timezone for logging */
 # TODO: Update base container to have the correct timezone
-$timezone = getenv('AUTOMAGIC_TIMEZONE') ? $getenv('AUTOMAGIC_TIMEZONE') : 'America/Denver';
+$timezone = getenv('AUTOMAGIC_TIMEZONE') ? getenv('AUTOMAGIC_TIMEZONE') : 'America/Denver';
 date_default_timezone_set($timezone);
+
+$timeout = getenv('AUTOMAGIC_TIMEOUT') ? getenv('AUTOMAGIC_TIMEOUT') : 10000;
 
 _log('Loading templates');
 $t_header = file_get_contents(__DIR__ . '/templates/header.cfg');
+$t_header = str_replace('__timeout__', $timeout, $t_header);
+_log('Timeout was set to: ' . $timeout);
 $t_frontend = file_get_contents(__DIR__ . '/templates/frontend.cfg');
 $t_backend = file_get_contents(__DIR__ . '/templates/backend.cfg');
 _log('Templates loaded');
@@ -49,21 +53,23 @@ if($containers = getContainers()){
 
     /* Now we have the containers, lets see if we were given any configuration files */
     $mappings_dir = __DIR__ . '/../config/';
-    $mappings = scandir($mappings_dir);
-    foreach($mappings as $mapping) {
-        if($mapping == '.' || $mapping == '..'){
-            continue;
-        } else {
-            $contents = file_get_contents($mappings_dir . $mapping);
-            $contents = explode("\n", $contents);
-            foreach($contents as $map) {
-                if(strpos($map, ':') === FALSE) {
-                    continue;
-                } else {
-                    list($incoming, $container) = explode(':', $map);
-                    if(isset($web_containers[$container])){
-                        $web_containers[$incoming] = $web_containers[$container];
-                        _log($incoming . '* -> 172.17.42.1:' . $web_containers[$container], 'WEB');
+    if(file_exists($mappings_dir)) {
+        $mappings = scandir($mappings_dir);
+        foreach($mappings as $mapping) {
+            if($mapping == '.' || $mapping == '..'){
+                continue;
+            } else {
+                $contents = file_get_contents($mappings_dir . $mapping);
+                $contents = explode("\n", $contents);
+                foreach($contents as $map) {
+                    if(strpos($map, ':') === FALSE) {
+                        continue;
+                    } else {
+                        list($incoming, $container) = explode(':', $map);
+                        if(isset($web_containers[$container])){
+                            $web_containers[$incoming] = $web_containers[$container];
+                            _log($incoming . '* -> 172.17.42.1:' . $web_containers[$container], 'WEB');
+                        }
                     }
                 }
             }

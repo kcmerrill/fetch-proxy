@@ -10,7 +10,10 @@ automagicproxy:
  build: .
  remove: true
  p: 80:80
- e: AUTOMAGIC_PORTS=9999
+ e:
+  - AUTOMAGIC_PORTS=9999
+  - AUTOMAGIC_TIMEOUT=10000
+
  notes:
     - AutomagicProxy is now running on port 80.
     - More info can be found at https://registry.hub.docker.com/u/kcmerrill/automagicproxy/
