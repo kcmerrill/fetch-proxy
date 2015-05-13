@@ -70,6 +70,13 @@ if($containers = getContainers()){
         }
     }
 
+    /**
+     * Order the containers descending by name length.
+     * We want shorter names to appear last so if multiple containers match the shortest one is used.
+     */
+    $keys = array_map('strlen', array_keys($web_containers));
+    array_multisort($keys, SORT_DESC, $web_containers);
+
     /* Ok, now that we have our containers, lets start to write our configuration*/
     foreach($web_containers as $wc_host=>$wc_port){
         $frontend .= str_replace('__host__', $wc_host, $t_frontend);
