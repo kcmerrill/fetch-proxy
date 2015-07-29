@@ -68,6 +68,8 @@ if($containers = getContainers()){
                         list($incoming, $container) = explode(':', $map);
                         if(isset($web_containers[$container])){
                             $web_containers[$incoming] = $web_containers[$container];
+                            /* We don't need to refence the container by it's name because it will create duplicates rules */
+                            unset($web_containers[$container]);
                             _log($incoming . '* -> 172.17.42.1:' . $web_containers[$container], 'WEB');
                         }
                     }
