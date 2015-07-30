@@ -7,13 +7,20 @@ docker-http:
 automagicproxy:
  image: kcmerrill/automagicproxy
  pull: haproxy
- build: .
  remove: true
  p: 80:80
  e:
   - AUTOMAGIC_PORTS=9999
-  - AUTOMAGIC_TIMEOUT=10000
-
+  - AUTOMAGIC_TIMEOUT=1000000
+ v:
+  - $PWD/config:/automagicproxy/config
+  - /tmp:/var/lib/php5
+ setup:
+  - mkdir -p $PWD/config
+ env:
+    build:
+        build: .
  notes:
     - AutomagicProxy is now running on port 80.
     - More info can be found at https://registry.hub.docker.com/u/kcmerrill/automagicproxy/
+ description: A reverse proxy to direct a dynamic DNS entries to your docker containers via their names.

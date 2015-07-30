@@ -126,6 +126,9 @@ function restartHAPROXY($new_config){
 
 function writeConfig($new_config){
     $file_name = __DIR__ . '/config/haproxy.cfg';
+    if($new_config == file_get_contents($file_name)) {
+        return FALSE;
+    }
     $results = file_put_contents($file_name, $new_config);
     if($results !== FALSE){
         _log($file_name . ' written to succesfully!', 'SUCCESS');
