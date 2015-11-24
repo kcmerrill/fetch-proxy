@@ -13,6 +13,12 @@
 $timezone = getenv('AUTOMAGIC_TIMEZONE') ? getenv('AUTOMAGIC_TIMEZONE') : 'America/Denver';
 date_default_timezone_set($timezone);
 
+// Figure out the correct IP subnet based on container's IP
+$localIP = getHostByName(getHostName());
+$parts = explode('.', $localIP);
+$parts[3] = 1;
+$hostIP = implode('.', $parts);
+
 $timeout = getenv('AUTOMAGIC_TIMEOUT') ? getenv('AUTOMAGIC_TIMEOUT') : 10000;
 
 _log('Loading templates');
@@ -45,7 +51,7 @@ if($containers = getContainers()){
             if(isset($c_port['PrivatePort']) && in_array($c_port['PrivatePort'], $ports)){
                 if(isset($c_port['PublicPort'])){
                     $web_containers[$c_name] = $c_port['PublicPort'];
-                    _log($c_name . '* -> 172.17.42.1:' . $c_port['PublicPort'], 'WEB');
+                    _log($c_name . '* -> ' . $hostIP . ':' . $c_port['PublicPort'], 'WEB');
                 }
             }
         }
@@ -68,7 +74,7 @@ if($containers = getContainers()){
                         list($incoming, $container) = explode(':', $map);
                         if(isset($web_containers[$container])){
                             $web_containers[$incoming] = $web_containers[$container];
-                            _log($incoming . '* -> 172.17.42.1:' . $web_containers[$container], 'WEB');
+                            _log($incoming . '* -> ' . $hostIP . ':' . $web_containers[$container], 'WEB');
                         }
                     }
                 }
@@ -88,6 +94,7 @@ if($containers = getContainers()){
         $frontend .= str_replace('__host__', $wc_host, $t_frontend);
         $be_temp  = str_replace('__port__', $wc_port, $t_backend);
         $be_temp  = str_replace('__host__', $wc_host, $be_temp);
+        $be_temp  = str_replace('__hostip__', $hostIP, $be_temp);
         $backend .= $be_temp;
     }
 
@@ -105,7 +112,9 @@ if($containers = getContainers()){
 
 /* Quick functions */
 function getContainers(){
-    $api = 'http://172.17.42.1:2375/containers/json';
+    global $hostIP;
+
+    $api = 'http://' . $hostIP . ':2375/containers/json';
     /* Debugging with boot2docker */
     //$api = 'http://192.168.59.103:2375/containers/json';
     _log('Fetching containers using Docker remote API: ' . $api );
