@@ -18,6 +18,9 @@ automagicproxy:
  setup:
   - mkdir -p $PWD/config
  env:
+    buildandpush:
+        build: .
+        push: true
     build:
         build: .
  notes:

@@ -13,7 +13,11 @@
 $timezone = getenv('AUTOMAGIC_TIMEZONE') ? getenv('AUTOMAGIC_TIMEZONE') : 'America/Denver';
 date_default_timezone_set($timezone);
 
+/* How long before haproxy times out? */
 $timeout = getenv('AUTOMAGIC_TIMEOUT') ? getenv('AUTOMAGIC_TIMEOUT') : 10000;
+
+/* Configure host ip */
+$host_ip = getenv('AUTOMAGIC_HOST_IP') ? getenv('AUTOMAGIC_HOST_IP') : '172.17.42.1';
 
 _log('Loading templates');
 $t_header = file_get_contents(__DIR__ . '/templates/header.cfg');
@@ -36,7 +40,7 @@ $web_containers = array();
 $frontend = $backend = '';
 
 /* Giddy Up */
-if($containers = getContainers()){
+if($containers = getContainers($host_ip)){
     _log('Found ' . count($containers) . ' running containers');
     /* Go through each container and see if it qualifies as a web container */
     foreach($containers as $c){
@@ -45,7 +49,7 @@ if($containers = getContainers()){
             if(isset($c_port['PrivatePort']) && in_array($c_port['PrivatePort'], $ports)){
                 if(isset($c_port['PublicPort'])){
                     $web_containers[$c_name] = $c_port['PublicPort'];
-                    _log($c_name . '* -> 172.17.42.1:' . $c_port['PublicPort'], 'WEB');
+                    _log($c_name . '* -> '. $host_ip .':' . $c_port['PublicPort'], 'WEB');
                 }
             }
         }
@@ -88,6 +92,7 @@ if($containers = getContainers()){
         $frontend .= str_replace('__host__', $wc_host, $t_frontend);
         $be_temp  = str_replace('__port__', $wc_port, $t_backend);
         $be_temp  = str_replace('__host__', $wc_host, $be_temp);
+        $be_temp  = str_replace('__host_ip__', $host_ip, $be_temp);
         $backend .= $be_temp;
     }
 
@@ -104,10 +109,8 @@ if($containers = getContainers()){
 }
 
 /* Quick functions */
-function getContainers(){
-    $api = 'http://172.17.42.1:2375/containers/json';
-    /* Debugging with boot2docker */
-    //$api = 'http://192.168.59.103:2375/containers/json';
+function getContainers($host_ip){
+    $api = 'http://'. $host_ip . ':2375/containers/json';
     _log('Fetching containers using Docker remote API: ' . $api );
     _log('Is socat running? If not try: $(docker run sequenceiq/socat)', 'QUESTION');
     $containers = json_decode(trim(`curl -s $api`), TRUE);
