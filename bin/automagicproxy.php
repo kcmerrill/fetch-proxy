@@ -17,7 +17,7 @@ date_default_timezone_set($timezone);
 $timeout = getenv('AUTOMAGIC_TIMEOUT') ? getenv('AUTOMAGIC_TIMEOUT') : 10000;
 
 /* Configure host ip */
-$host_ip = getenv('AUTOMAGIC_HOST_IP') ? getenv('AUTOMAGIC_HOST_IP') : '172.17.42.1';
+$host_ip = getenv('AUTOMAGIC_HOST_IP') ? getenv('AUTOMAGIC_HOST_IP') : trim(`/sbin/ip route|awk '/default/ { print $3 }'`);
 
 _log('Loading templates');
 $t_header = file_get_contents(__DIR__ . '/templates/header.cfg');
