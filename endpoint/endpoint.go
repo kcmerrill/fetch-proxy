@@ -6,22 +6,28 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 )
 
 /* Everything we need to house our endpoints */
 type Endpoint struct {
-	Active bool
-	Url    *url.URL
-	Proxy  *httputil.ReverseProxy
+	Active     bool
+	Url        *url.URL
+	Proxy      *httputil.ReverseProxy
+	Registered string
+	Available  time.Time
+}
+
+func (e Endpoint) isActive() bool {
+	return e.Active
 }
 
 func (e *Endpoint) HealthCheck() {
-	previous_status := e.Active
-	status_code := 0
+	previous_status := e.isActive()
+	status_code := 500
 	if resp, err := http.Get(e.Url.String()); err != nil {
 		/* Something is up ... disable this endpoint */
 		e.Active = false
-		status_code = 500
 	} else {
 		/* Woot! Good to go ... */
 		status_code = resp.StatusCode
@@ -31,14 +37,18 @@ func (e *Endpoint) HealthCheck() {
 			e.Active = false
 		}
 	}
-
+	log.WithFields(log.Fields{
+		"previous": previous_status,
+		"current":  e.Active,
+	}).Debug(e.Registered)
 	if e.Active != previous_status {
 		if e.Active {
 			/* Whew, we came back online */
 			log.WithFields(
 				log.Fields{
 					"URL": e.Url.String(),
-				}).Debug("Up")
+				}).Info("Up")
+			e.Available = time.Now()
 		} else {
 			/* BOO HISS! */
 			log.WithFields(
@@ -57,9 +67,11 @@ func New(base, endpoint_url string) (*Endpoint, error) {
 		return nil, errors.New("Problem parsing URL " + endpoint_url)
 	} else {
 		e := &Endpoint{
-			Url:    u,
-			Proxy:  httputil.NewSingleHostReverseProxy(u),
-			Active: false,
+			Url:        u,
+			Proxy:      httputil.NewSingleHostReverseProxy(u),
+			Active:     false,
+			Available:  time.Now(),
+			Registered: base,
 		}
 		e.HealthCheck()
 		return e, nil

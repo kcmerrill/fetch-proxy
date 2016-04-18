@@ -20,37 +20,42 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 
 	/* Grab the last key in the list that matches */
 	for base, _ := range endpoints {
-		if strings.HasPrefix(r.Host, base) {
-			use = base
+		b := base
+		if strings.Contains(b, "_") {
+			b = base[0:strings.Index(b, "_")]
+		}
+		if strings.HasPrefix(r.Host, b) && endpoints[base].Active {
+			if endpoints[base].Available.After(endpoints[use].Available) {
+				use = base
+			}
 		}
 	}
 
-	/*If it exists ... use it ... */
-	if _, exists := endpoints[use]; exists && endpoints[use].Active {
-		log.WithFields(
-			log.Fields{
-				"Request":   r.Host,
-				"IP":        r.RemoteAddr,
-				"Forwarded": use,
-			}).Info("New Request")
+	log.WithFields(
+		log.Fields{
+			"Request":   r.Host,
+			"IP":        r.RemoteAddr,
+			"Forwarded": use,
+		}).Info("New Request")
+
+	/* One quick sanity check before sending it on it's way */
+	if _, exists := endpoints[use]; exists {
 		endpoints[use].Proxy.ServeHTTP(w, r)
-	} else {
-		log.WithFields(
-			log.Fields{
-				"Request":   r.Host,
-				"IP":        r.RemoteAddr,
-				"Forwarded": use,
-			}).Error("Endpoint not found")
 	}
 }
 
 /* Starts our proxy .. */
 func Start(http_port int) {
-	go HealthChecks()
 	log.WithFields(
 		log.Fields{
 			"port": http_port,
 		}).Info("Starting automagic proxy")
+
+	/* Add our default */
+	Add("_default", fmt.Sprintf("www.localhost:%d", http_port))
+
+	/* Start our healthchecks */
+	go HealthChecks()
 
 	http.HandleFunc("/", passThrough)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", http_port), nil); err != nil {
@@ -61,13 +66,17 @@ func Start(http_port int) {
 
 /* Add an endpoint to our proxy */
 func Add(base, endpoint_url string) error {
-	if ep, err := endpoint.New(base, endpoint_url); err == nil {
-		if _, exists := endpoints[base]; !exists {
-			log.WithFields(log.Fields{
-				"incoming": base,
-				"endpoint": endpoint_url,
-			}).Info(fmt.Sprintf("%s regestered", base))
+	if _, exists := endpoints[base]; exists {
+		if endpoints[base].Registered == base && endpoints[base].Url.String() == endpoint_url {
+			return nil
 		}
+	}
+	if ep, err := endpoint.New(base, endpoint_url); err == nil {
+		/* If it doesn't exist ... */
+		log.WithFields(log.Fields{
+			"url":        endpoint_url,
+			"registered": base,
+		}).Info("Registered endpoint")
 		endpoints[base] = ep
 		return nil
 	} else {
