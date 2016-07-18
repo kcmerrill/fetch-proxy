@@ -1,11 +1,11 @@
 package proxy
 
 import (
-	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/kcmerrill/automagicproxy/endpoint"
 	"github.com/kcmerrill/shutdown.go"
 	"net/http"
+	"rsc.io/letsencrypt"
 	"strings"
 	"time"
 )
@@ -25,7 +25,8 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 			b = base[0:strings.Index(b, "_")]
 		}
 		if strings.HasPrefix(r.Host, b) && endpoints[base].Active {
-			if endpoints[base].Available.After(endpoints[use].Available) {
+			/* When was it registered? */
+			if use == "_default" || endpoints[base].Available.After(endpoints[use].Available) {
 				use = base
 			}
 		}
@@ -51,17 +52,16 @@ func Start(http_port int) {
 			"port": http_port,
 		}).Info("Starting automagic proxy")
 
-	/* Add our default */
-	Add("_default", fmt.Sprintf("www.localhost:%d", http_port))
-
 	/* Start our healthchecks */
 	go HealthChecks()
 
 	http.HandleFunc("/", passThrough)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", http_port), nil); err != nil {
-		log.Error(err.Error())
+	var m letsencrypt.Manager
+	if err := m.CacheFile("letsencrypt.cache"); err != nil {
+		log.Fatal(err)
 		shutdown.Now()
 	}
+	log.Fatal(m.Serve())
 }
 
 /* Add an endpoint to our proxy */
