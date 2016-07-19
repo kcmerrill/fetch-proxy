@@ -6,7 +6,9 @@ import (
 	d "github.com/kcmerrill/automagicproxy/docker"
 	"github.com/kcmerrill/automagicproxy/proxy"
 	"github.com/kcmerrill/shutdown.go"
+	"net/http"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -16,6 +18,8 @@ func main() {
 	containerized := flag.Bool("containerized", false, "Is automagicproxy running in a container?")
 	flag.Parse()
 
+	/* Set a global timeout */
+	http.DefaultClient.Timeout = 10 * time.Second
 	/* Start our proxy on the specified port */
 	go proxy.Start(*port)
 
