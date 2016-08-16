@@ -13,7 +13,9 @@ mycoolapp.kcmerrill.com -> automagicproxy:80 -> mycoolapp:46743
 At work I was previously on the web platform team. Our job is many, but we are responsible for making sure all devs have access/ability to work with all of our products including but not limited to building and maintaining web dev boxes, transitioning our old infastructure over to docker etc etc. This is where yoda comes in at. I got tired of explaining to everybody the thousand steps it required to get all of our projects up and running. Furthermore, configuring haproxy was a bit of a tall order, as everybody was using different commands, etc to manage their dev boxes. On top of that, if anything went wrong, they came to me, so yoda and automagicproxy is a way to standardize a few things across the company.
 
 # Usage
-`docker run -ti -p 80:80 -p 443:443 -v /var/run/docker.sock:/var/run/docker.sock --name automagicproxy kcmerrill/automagicproxy`
+`$ go get github.com/kcmerrill/automagicproxy`
+
+`$ automagicproxy --dockerized`
 
 Now, start up your docker containers as you normally would. Any docker containers that use a private port of 80, will be automagically mapped based on their container names.
 
