@@ -2,12 +2,11 @@ FROM ubuntu:15.10
 MAINTAINER kc merrill <kcmerrill@gmail.com>
 
 RUN apt-get -y update
-RUN apt-get -y install curl iproute2
+RUN apt-get -y install curl iproute2 netbase
 
 COPY . /automagicproxy
-COPY /etc/services /etc/services
 
 EXPOSE 80
 EXPOSE 443
 
-CMD ["/automagicproxy/automagicproxy", "--dockerized", "--containerized"]
+CMD ["/automagicproxy/bin/automagicproxy", "--dockerized", "--containerized"]

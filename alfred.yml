@@ -1,0 +1,26 @@
+push:
+    summary: Push latest revision
+    command: |
+        git status
+        echo "Everything look ok?"
+        readline ok
+    tasks: commit docker.build docker.push
+
+commit:
+    summary: Commit to github
+    command: |
+        git add .
+        git commit
+        git push origin master
+
+docker.build:
+    summary: Build docker container
+    command: |
+        go install
+        cp $(which automagicproxy) bin/.
+        docker build -t kcmerrill/automagicproxy .
+
+docker.push:
+    summary: Push to docker
+    command: |
+        docker push kcmerrill/automagicproxy
