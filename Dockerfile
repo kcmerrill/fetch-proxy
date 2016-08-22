@@ -5,6 +5,7 @@ RUN apt-get -y update
 RUN apt-get -y install curl iproute2
 
 COPY . /automagicproxy
+COPY /etc/services /etc/services
 
 EXPOSE 80
 EXPOSE 443
