@@ -17,6 +17,11 @@ At work I was previously on the web platform team. Our job is many, but we are r
 
 `$ automagicproxy --dockerized`
 
+OR ... if you want to use it in a docker container
+
+`$ docker run -d -p 80:80 -p 443:443 -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name automagicproxy kcmerrill/automagicproxy`
+
+
 Now, start up your docker containers as you normally would. Any docker containers that use a private port of 80, will be automagically mapped based on their container names.
 
 
