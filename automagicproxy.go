@@ -16,12 +16,13 @@ func main() {
 	port := flag.Int("port", 80, "The port in which the proxy will listen on")
 	dockerized := flag.Bool("dockerized", false, "Query running containers and auto map them")
 	containerized := flag.Bool("containerized", false, "Is automagicproxy running in a container?")
+	insecure := flag.Bool("insecure", false, "Should use HTTP or HTTPS? HTTP works great for dev envs")
 	flag.Parse()
 
 	/* Set a global timeout */
 	http.DefaultClient.Timeout = 10 * time.Second
 	/* Start our proxy on the specified port */
-	go proxy.Start(*port)
+	go proxy.Start(*port, !*insecure)
 
 	if *dockerized {
 		go d.Start(*containerized, *port)

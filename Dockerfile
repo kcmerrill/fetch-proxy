@@ -9,4 +9,5 @@ COPY . /automagicproxy
 EXPOSE 80
 EXPOSE 443
 
-CMD ["/automagicproxy/bin/automagicproxy", "--dockerized", "--containerized"]
+ENTRYPOINT ["/automagicproxy/bin/automagicproxy"]
+CMD ["--dockerized", "--containerized"]

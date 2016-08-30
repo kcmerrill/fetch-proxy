@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/kcmerrill/automagicproxy/endpoint"
 	"github.com/kcmerrill/shutdown.go"
@@ -46,7 +47,7 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 }
 
 /* Starts our proxy .. */
-func Start(http_port int) {
+func Start(http_port int, secured bool) {
 	log.WithFields(
 		log.Fields{
 			"port": http_port,
@@ -56,12 +57,21 @@ func Start(http_port int) {
 	go HealthChecks()
 
 	http.HandleFunc("/", passThrough)
-	var m letsencrypt.Manager
-	if err := m.CacheFile("letsencrypt.cache"); err != nil {
-		log.Fatal(err)
-		shutdown.Now()
+
+	if !secured {
+		if err := http.ListenAndServe(fmt.Sprintf(":%d", http_port), nil); err != nil {
+			log.Fatal(err.Error())
+			shutdown.Now()
+		}
+	} else {
+		var m letsencrypt.Manager
+		if err := m.CacheFile("letsencrypt.cache"); err != nil {
+			log.Fatal(err)
+			shutdown.Now()
+		}
+		log.Fatal(m.Serve())
 	}
-	log.Fatal(m.Serve())
+
 }
 
 /* Add an endpoint to our proxy */
