@@ -17,7 +17,7 @@ var endpoints map[string]*endpoint.Endpoint
 /* Meat and potatoes right here ... */
 func passThrough(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-AutomagicProxy", "v1.0")
-	use := "_default"
+	use := "_notfound"
 
 	/* Grab the last key in the list that matches */
 	for base, _ := range endpoints {
@@ -27,7 +27,7 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 		}
 		if strings.HasPrefix(r.Host, b) && endpoints[base].Active {
 			/* When was it registered? */
-			if use == "_default" || endpoints[base].Available.After(endpoints[use].Available) {
+			if use == "_notfound" || endpoints[base].Available.After(endpoints[use].Available) {
 				use = base
 			}
 		}
@@ -43,6 +43,9 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 	/* One quick sanity check before sending it on it's way */
 	if _, exists := endpoints[use]; exists {
 		endpoints[use].Proxy.ServeHTTP(w, r)
+	} else {
+		w.WriteHeader(http.StatusBadGateway)
+		w.Write([]byte("Error 502 - Bad Gateway"))
 	}
 }
 
