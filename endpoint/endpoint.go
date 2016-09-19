@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Healthy bool=true
+
 /* Everything we need to house our endpoints */
 type Endpoint struct {
 	Active     bool
@@ -31,10 +33,10 @@ func (e *Endpoint) HealthCheck() {
 	} else {
 		/* Woot! Good to go ... */
 		status_code = resp.StatusCode
-		if resp.StatusCode < 500 {
-			e.Active = true
-		} else {
+		if Healthy && resp.StatusCode >= 500 {
 			e.Active = false
+		} else {
+			e.Active = true
 		}
 	}
 	log.WithFields(log.Fields{
@@ -69,7 +71,7 @@ func New(base, endpoint_url string) (*Endpoint, error) {
 		e := &Endpoint{
 			Url:        u,
 			Proxy:      httputil.NewSingleHostReverseProxy(u),
-			Active:     false,
+			Active:     true,
 			Available:  time.Now(),
 			Registered: base,
 		}
