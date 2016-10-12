@@ -27,7 +27,7 @@ func (e Endpoint) isActive() bool {
 func (e *Endpoint) HealthCheck() {
 	previous_status := e.isActive()
 	status_code := 500
-	if resp, err := http.Get(e.Url.String()); err != nil {
+	if resp, err := http.Get(e.Url.String()+"?automaticproxy-healthcheck"); err != nil {
 		/* Something is up ... disable this endpoint */
 		e.Active = false
 	} else {
