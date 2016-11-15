@@ -16,9 +16,6 @@ commit:
 docker.build:
     summary: Build docker container
     command: |
-        go install
-        mkdir bin || true
-        cp $(which automagicproxy) bin/.
         docker build -t kcmerrill/automagicproxy .
 
 docker.push:
