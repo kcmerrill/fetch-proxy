@@ -9,27 +9,30 @@ import (
 	"rsc.io/letsencrypt"
 	"strings"
 	"time"
+	"sort"
 )
 
 /* Store all of our endpoints */
 var endpoints map[string]*endpoint.Endpoint
+var endpointkeys sort.StringSlice
 
 /* Meat and potatoes right here ... */
 func passThrough(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-AutomagicProxy", "v1.0")
-	use := "_notfound"
+	usekey := "_notfound"
 
-	/* Grab the last key in the list that matches */
-	for base, _ := range endpoints {
-		b := base
+	/* Grab the first key in the list that matches */
+	for _, key := range endpointkeys {
+		b := endpoints[key].Registered
+
+		/* Allow for multiple containers with the same url */
 		if strings.Contains(b, "_") {
-			b = base[0:strings.Index(b, "_")]
+			b = b[0:strings.Index(b, "_")]
 		}
-		if strings.HasPrefix(r.Host, b) && endpoints[base].Active {
-			/* When was it registered? */
-			if use == "_notfound" || endpoints[base].Available.After(endpoints[use].Available) {
-				use = base
-			}
+
+		if strings.HasPrefix(r.Host, b) && endpoints[key].Active {
+			usekey = key
+			break
 		}
 	}
 
@@ -37,12 +40,12 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 		log.Fields{
 			"Request":   r.Host,
 			"IP":        r.RemoteAddr,
-			"Forwarded": use,
+			"Forwarded": endpoints[usekey].Registered,
 		}).Info("New Request")
 
 	/* One quick sanity check before sending it on it's way */
-	if _, exists := endpoints[use]; exists {
-		endpoints[use].Proxy.ServeHTTP(w, r)
+	if _, exists := endpoints[usekey]; exists {
+		endpoints[usekey].Proxy.ServeHTTP(w, r)
 	} else {
 		w.WriteHeader(http.StatusBadGateway)
 		w.Write([]byte("Error 502 - Bad Gateway"))
@@ -79,18 +82,36 @@ func Start(http_port int, secured bool) {
 
 /* Add an endpoint to our proxy */
 func Add(base, endpoint_url string) error {
-	if _, exists := endpoints[base]; exists {
-		if endpoints[base].Registered == base && endpoints[base].Url.String() == endpoint_url {
+	/* Check if endpoint already exists */
+	for _, item := range endpoints {
+		if item.Registered == base && item.Url.String() == endpoint_url {
 			return nil
 		}
 	}
+
+	/* Construct the key so that you can sort by url base and time added */
+	urlbase := base
+
+	/* Remove any thing after the _ from the url */
+	if strings.Contains(urlbase, "_") {
+		urlbase = urlbase[0:strings.Index(urlbase, "_")]
+	}
+
+	key := urlbase+"-"+time.Now().Format("2006-01-02T15:04:05.000")
+
+	/* Add new endpoint */
 	if ep, err := endpoint.New(base, endpoint_url); err == nil {
 		/* If it doesn't exist ... */
 		log.WithFields(log.Fields{
 			"url":        endpoint_url,
 			"registered": base,
+			"urlbase":    urlbase,
 		}).Info("Registered endpoint")
-		endpoints[base] = ep
+		endpoints[key] = ep
+		endpointkeys = append(endpointkeys, key)
+
+		sort.Sort(sort.Reverse(endpointkeys))
+
 		return nil
 	} else {
 		return err
