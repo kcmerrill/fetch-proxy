@@ -1,0 +1,7 @@
+package: github.com/kcmerrill/automagicproxy
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.0
+- package: github.com/fsouza/go-dockerclient
+- package: github.com/kcmerrill/shutdown.go
+- package: rsc.io/letsencrypt

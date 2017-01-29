@@ -7,9 +7,9 @@ import (
 	"github.com/kcmerrill/shutdown.go"
 	"net/http"
 	"rsc.io/letsencrypt"
+	"sort"
 	"strings"
 	"time"
-	"sort"
 )
 
 /* Store all of our endpoints */
@@ -40,7 +40,7 @@ func passThrough(w http.ResponseWriter, r *http.Request) {
 		log.Fields{
 			"Request":   r.Host,
 			"IP":        r.RemoteAddr,
-			"Forwarded": endpoints[usekey].Registered,
+			"Forwarded": usekey,
 		}).Info("New Request")
 
 	/* One quick sanity check before sending it on it's way */
@@ -97,7 +97,7 @@ func Add(base, endpoint_url string) error {
 		urlbase = urlbase[0:strings.Index(urlbase, "_")]
 	}
 
-	key := urlbase+"-"+time.Now().Format("2006-01-02T15:04:05.000")
+	key := urlbase + "-" + time.Now().Format("2006-01-02T15:04:05.000")
 
 	/* Add new endpoint */
 	if ep, err := endpoint.New(base, endpoint_url); err == nil {
