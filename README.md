@@ -16,7 +16,12 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 
 or via docker:
 
-` $ docker run -d -p 80:80 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy`
+` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy`
+
+or via docker in your dev env:
+
+` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy --containerized --dockerized --insecure`
+
 
 ## How it works
 Normally if you have multiple running docker containers on a host, you'd need a proxy to configure the ports and map between the host machine and the containers. With `fetch-proxy` you simply start coding. 
