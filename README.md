@@ -5,7 +5,7 @@
 Fetch is a simple proxy that automagically routes web traffic to running docker containers to host ports. Great for dev/ci environments. Works great in production for hosts that have web sites running on one machine.
 
  * Healthchecks for services
- * Secure connections using lets encrypt(on by default)
+ * Secure connections using lets encrypt(on by default, disable by using `--insecure` flag)
  * Default service if mapping not found
  * Response timeouts
  * Automagically maps new containers
