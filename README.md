@@ -18,8 +18,9 @@ or via docker:
 
 ` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy`
 
-### Side note
-Be sure to add the `--insecure` flag if you're working on localhost
+or via docker on localhost:
+
+` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy --dockerized --containerized --insecure`
 
 
 ## How it works
