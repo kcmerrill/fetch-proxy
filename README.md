@@ -19,4 +19,5 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 ## How it works
 Normally if you have multiple running docker containers on a host, you'd need a proxy to configure the ports and map between the host machine and the containers. With `fetch-proxy` you simply start coding. 
 
-## Demo
+#### Questions/Comments/Feedback?
+Would love to hear it. Email me at kcmerrill [at] gmail [dot] com
