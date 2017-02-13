@@ -6,10 +6,10 @@ RUN apt-get -y install curl iproute2 netbase
 
 COPY . /code
 
-RUN go get -u github.com/kcmerrill/foxy-proxy
+RUN go get -u github.com/kcmerrill/fetch-proxy
 
 EXPOSE 80
 EXPOSE 443
 
-ENTRYPOINT ["foxy-proxy"]
+ENTRYPOINT ["fetch-proxy"]
 CMD ["--dockerized", "--containerized"]
