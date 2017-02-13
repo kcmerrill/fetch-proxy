@@ -1,31 +1,33 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os/exec"
 	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	d "github.com/fsouza/go-dockerclient"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 )
 
 // ContainerWatch checks for new containers and if they exist, add the sites and it's endpoints
 func ContainerWatch(containerized, healthchecks bool, healthCheckURL string, myPort int) {
-	myPort64 := int64(myPort)
+	myPort64 := uint16(myPort)
 	address := "localhost"
 	if containerized {
 		address = containerizedIP()
 	}
 
-	client, err := d.NewClient("unix:///var/run/docker.sock")
+	cli, err := client.NewEnvClient()
 	if err != nil {
 		log.Error(err.Error())
 		return
 	}
 
 	for {
-		if containers, err := client.ListContainers(d.ListContainersOptions{All: true}); err == nil {
+		if containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{}); err == nil {
 			for _, container := range containers {
 				name := container.Names[0][1:]
 				for _, port := range container.Ports {

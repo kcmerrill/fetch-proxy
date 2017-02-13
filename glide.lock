@@ -1,59 +1,48 @@
-hash: c7aa59bae0aff3057eaa3270847c882ac64003c3ad7c6e55fc361bc11b19f067
-updated: 2017-02-12T20:39:47.691208077-07:00
+hash: feb1a5a5f431e58c0be473c65cbf699e4bad62eb3fe9ed13c8c6f92a56923dfc
+updated: 2017-02-12T23:41:53.844811603-07:00
 imports:
-- name: github.com/Azure/go-ansiterm
-  version: fa152c58bc15761d0200cb75fe958b89a9d4888e
+- name: github.com/docker/distribution
+  version: b1993c95303df3d0214129d85382c3c573e4df20
   subpackages:
-  - winterm
+  - digestset
+  - reference
 - name: github.com/docker/docker
   version: 092cba3727bb9b4a2f0e922cd6c0f93ea270e363
   subpackages:
   - api/types
   - api/types/blkiodev
   - api/types/container
+  - api/types/events
   - api/types/filters
   - api/types/mount
   - api/types/network
+  - api/types/reference
   - api/types/registry
   - api/types/strslice
   - api/types/swarm
+  - api/types/time
   - api/types/versions
-  - opts
-  - pkg/archive
-  - pkg/fileutils
-  - pkg/homedir
-  - pkg/idtools
-  - pkg/ioutils
-  - pkg/jsonlog
-  - pkg/jsonmessage
-  - pkg/longpath
-  - pkg/pools
-  - pkg/promise
-  - pkg/stdcopy
-  - pkg/system
-  - pkg/term
-  - pkg/term/windows
+  - api/types/volume
+  - client
+  - pkg/tlsconfig
 - name: github.com/docker/go-connections
   version: 7da10c8c50cad14494ec818dcdfb6506265c0086
   subpackages:
   - nat
+  - sockets
+  - tlsconfig
 - name: github.com/docker/go-units
   version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
-- name: github.com/fsouza/go-dockerclient
-  version: c342fd4c3d69bdc9767083cc61d11756e7323b64
-- name: github.com/hashicorp/go-cleanhttp
-  version: 3573b8b52aa7b37b9358d966a898feb387f62437
 - name: github.com/kcmerrill/shutdown.go
   version: 908c645a50e570c7813e9fc79f5f1a0966f738e6
 - name: github.com/Microsoft/go-winio
   version: fff283ad5116362ca252298cfc9b95828956d85d
 - name: github.com/miekg/dns
   version: ea75cede31cf5d33bc900829220f911fbbdabde3
-- name: github.com/opencontainers/runc
-  version: 4f21aea40d060d0171b1c94861f2f63f4a6029d0
-  subpackages:
-  - libcontainer/system
-  - libcontainer/user
+- name: github.com/opencontainers/go-digest
+  version: aa2ec055abd10d26d539eb630a92241b781ce4bc
+- name: github.com/pkg/errors
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/Sirupsen/logrus
   version: c078b1e43f58d563c74cebe63c85789e76ddb627
 - name: github.com/xenolf/lego
@@ -69,6 +58,7 @@ imports:
   subpackages:
   - context
   - context/ctxhttp
+  - proxy
   - publicsuffix
 - name: golang.org/x/sys
   version: aaabbdc969c3935a2a7f61efac801e7163c73a2a
