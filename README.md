@@ -5,7 +5,7 @@
 Fetch is a simple proxy that automagically routes web traffic to running docker containers to host ports. Great for dev/ci environments. Works great in production for hosts that have web sites running on one machine.
 
  * Healthchecks for services
- * Secure connections using lets encrypt(on by default, disable by using `--insecure` flag)
+ * Secure connections using lets encrypt
  * Default service if mapping not found
  * Response timeouts
  * Automagically maps new containers
@@ -16,8 +16,7 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 ## Getting Started
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
-## How it works
-Normally if you have multiple running docker containers on a host, you'd need a proxy to configure the ports and map between the host machine and the containers. With `fetch-proxy` you simply start coding. 
+Use the `--insecure` flag if you are working on localhost, else enjoy `https://` urls from letsencrypt.org
 
 #### Questions/Comments/Feedback?
 Would love to hear it. Email me at kcmerrill [at] gmail [dot] com
