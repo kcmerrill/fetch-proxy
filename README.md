@@ -24,7 +24,7 @@ via docker:
 Use the `--insecure` flag if you are working on localhost, else enjoy `https://` urls from letsencrypt.org
 
 ## Zero downtime deployments
-By deploying containers with `_` in their names, this denotes different versions to `fetch-proxy` along with their start times. If you start a container called `test_v1.0`, test.<yourdomainname>.tld will route traffic to that specific container. If you launch another container named `test_v1.1` test.<yourdomianname>.tld will now start taking in that traffic once the container becomes online(via a healthcheck).
+By deploying containers with `_` in their names, this denotes different versions to `fetch-proxy` along with their start times. If you start a container called `test_v1.0`, test.domain.tld will route traffic to that specific container. If you launch another container named `test_v1.1` test.domain.tld will now start taking in that traffic once the container becomes online(via a healthcheck).
 
 #### Questions/Comments/Feedback?
 Would love to hear it. Email me at kcmerrill [at] gmail [dot] com
