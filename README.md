@@ -11,6 +11,8 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
  * Automagically maps new containers
  * Works using localhost for dev environments
 
+![fetch-proxy](https://raw.githubusercontent.com/kcmerrill/fetch-proxy/master/assets/fetch-proxy.gif "fetch-proxy gif")
+
 ## Getting Started
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
