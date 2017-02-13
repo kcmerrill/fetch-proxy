@@ -13,4 +13,4 @@ EXPOSE 80
 EXPOSE 443
 
 ENTRYPOINT ["fetch-proxy"]
-CMD ["--dockerized", "--containerized"]
+CMD ["--containerized"]

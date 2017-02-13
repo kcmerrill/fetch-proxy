@@ -13,7 +13,6 @@ import (
 func main() {
 	// Setup some command line arguments
 	port := flag.Int("port", 80, "The port in which the proxy will listen on")
-	dockerized := flag.Bool("dockerized", false, " running containers and auto map them")
 	containerized := flag.Bool("containerized", false, "Is fetch-proxy running in a container?")
 	insecure := flag.Bool("insecure", false, "Should use HTTP or HTTPS? HTTP works great for dev envs")
 	disableHealthChecks := flag.Bool("disable-healthchecks", false, "disable health checks for dev envs")
@@ -35,9 +34,7 @@ func main() {
 	// Start our proxy on the specified port
 	go FetchProxyStart(*port, !*insecure, !*disableHealthChecks, *healthCheckURL, *defaultEndpoint)
 
-	if *dockerized {
-		go ContainerWatch(*containerized, !*disableHealthChecks, *healthCheckURL, *port)
-	}
+	go ContainerWatch(*containerized, !*disableHealthChecks, *healthCheckURL, *port)
 
 	// No need to shutdown the application _UNLESS_ we catch it
 	shutdown.WaitFor(syscall.SIGINT, syscall.SIGTERM)

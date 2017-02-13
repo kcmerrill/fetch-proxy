@@ -29,7 +29,7 @@ func ContainerWatch(containerized, healthchecks bool, healthCheckURL string, myP
 			for _, container := range containers {
 				name := container.Names[0][1:]
 				for _, port := range container.Ports {
-					if port.PublicPort != myPort64 && port.Type == "tcp" {
+					if port.PublicPort != myPort64 && port.PublicPort != 443 && port.Type == "tcp" {
 						log.WithFields(log.Fields{
 							"Public":  port.PublicPort,
 							"Private": port.PrivatePort,
