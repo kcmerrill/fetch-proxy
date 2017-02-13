@@ -7,7 +7,7 @@ RUN apt-get -y install curl iproute2 netbase
 COPY . /code
 WORKDIR /code
 
-RUN go get -u github.com/kcmerrill/fetch-proxy
+RUN go get -u -v github.com/kcmerrill/fetch-proxy
 
 EXPOSE 80
 EXPOSE 443
