@@ -16,9 +16,13 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 ## Getting Started
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
-` $ docker run -d -p 80:80 -p 443:443 -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name fetch-proxy kcmerrill/fetch-proxy`
-
 Use the `--insecure` flag if you are working on localhost, else enjoy `https://` urls from letsencrypt.org
+
+or try it out in docker:
+
+` $ docker run -d -p 80:80 -p 443:443 -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name fetch-proxy kcmerrill/fetch-proxy --containerized --insecure`
+
+Remove the `--containerized --insecure` if you want to use `https://` urls from letsencrypt.org
 
 #### Questions/Comments/Feedback?
 Would love to hear it. Email me at kcmerrill [at] gmail [dot] com
