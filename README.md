@@ -18,9 +18,8 @@ or via docker:
 
 ` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy`
 
-or via docker in your dev env:
-
-` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy --containerized --dockerized --insecure`
+### Side note
+Be sure to add the `--insecure` flag if you're working on localhost
 
 
 ## How it works
