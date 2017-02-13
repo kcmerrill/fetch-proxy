@@ -9,6 +9,7 @@ A simple proxy that automagically routes web traffic to running docker container
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
 or via docker:
+
 ` $ docker run -d -p 80:80 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy`
 
 ## How it works
