@@ -7,7 +7,7 @@
 ## What is it
 A simple proxy that automagically links running docker containers to host ports using a wildcard dns entry.
 
-## Get u and running
+## Get up and running
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
 or via docker:
