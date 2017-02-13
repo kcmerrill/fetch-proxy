@@ -20,7 +20,7 @@ or via docker:
 
 or via docker on localhost:
 
-` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy --dockerized --containerized --insecure`
+` $ docker run -d -p 80:80 -p 443:443 --restart=always --name=fetch-proxy kcmerrill/fetch-proxy --containerized --insecure`
 
 
 ## How it works
