@@ -16,9 +16,9 @@ commit:
 docker.build:
     summary: Build docker container
     command: |
-        docker build -t kcmerrill/automagicproxy .
+        docker build -t kcmerrill/fetch-proxy .
 
 docker.push:
     summary: Push to docker
     command: |
-        docker push kcmerrill/automagicproxy
+        docker push kcmerrill/fetch-proxy

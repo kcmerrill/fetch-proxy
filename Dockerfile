@@ -6,10 +6,10 @@ RUN apt-get -y install curl iproute2 netbase
 
 COPY . /code
 
-RUN go get -u github.com/kcmerrill/automagicproxy
+RUN go get -u github.com/kcmerrill/foxy-proxy
 
 EXPOSE 80
 EXPOSE 443
 
-ENTRYPOINT ["automagicproxy"]
+ENTRYPOINT ["foxy-proxy"]
 CMD ["--dockerized", "--containerized"]
