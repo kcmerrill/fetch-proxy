@@ -40,6 +40,7 @@ func ContainerWatch(containerized, healthchecks bool, healthCheckURL string, myP
 			}
 		} else {
 			log.Error("Unable to connect to docker")
+			log.Error(err.Error())
 		}
 
 		// Every 5 seconds, check for new containers

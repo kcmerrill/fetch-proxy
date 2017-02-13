@@ -5,6 +5,7 @@ RUN apt-get -y update
 RUN apt-get -y install curl iproute2 netbase
 
 COPY . /code
+WORKDIR /code
 
 RUN go get -u github.com/kcmerrill/fetch-proxy
 
