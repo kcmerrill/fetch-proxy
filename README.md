@@ -14,7 +14,11 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 
 ![fetch-proxy](https://raw.githubusercontent.com/kcmerrill/fetch-proxy/master/assets/fetch-proxy.gif "fetch-proxy gif")
 
-## Getting Started
+## Binaries || Installation
+[![MacOSX](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/apple_logo.png "Mac OSX")] (http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/mac/amd6) [![Linux](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/linux_logo.png "Linux")] (http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/linux/amd64)
+
+or via go:
+
 ` $ go get github.com/kcmerrill/fetch-proxy`
 
 via docker:
