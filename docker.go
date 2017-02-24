@@ -37,6 +37,8 @@ func ContainerWatch(containerized, healthchecks bool, healthCheckURL string, myP
 							"Private": port.PrivatePort,
 						}).Debug(name)
 						AddSite(name, fmt.Sprintf("http://%s:%d", address, port.PublicPort), healthchecks, healthCheckURL)
+						// Only serve the first port(for now)
+						break
 					}
 				}
 			}
