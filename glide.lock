@@ -1,13 +1,13 @@
-hash: feb1a5a5f431e58c0be473c65cbf699e4bad62eb3fe9ed13c8c6f92a56923dfc
-updated: 2017-02-12T23:41:53.844811603-07:00
+hash: 31181df411377ee898d7aea6f30b09c44863496fa7dae3ad982ba7559c624263
+updated: 2017-03-19T16:20:18.797262563-06:00
 imports:
 - name: github.com/docker/distribution
-  version: b1993c95303df3d0214129d85382c3c573e4df20
+  version: 08b06dc023674763e7b36d404cf0c7664cee1f5e
   subpackages:
   - digestset
   - reference
 - name: github.com/docker/docker
-  version: 092cba3727bb9b4a2f0e922cd6c0f93ea270e363
+  version: 3476dbfb369a05aff504826721704f192a3f2788
   subpackages:
   - api/types
   - api/types/blkiodev
@@ -26,7 +26,7 @@ imports:
   - client
   - pkg/tlsconfig
 - name: github.com/docker/go-connections
-  version: 7da10c8c50cad14494ec818dcdfb6506265c0086
+  version: a2afab9802043837035592f1c24827fb70766de9
   subpackages:
   - nat
   - sockets
@@ -38,30 +38,30 @@ imports:
 - name: github.com/Microsoft/go-winio
   version: fff283ad5116362ca252298cfc9b95828956d85d
 - name: github.com/miekg/dns
-  version: ea75cede31cf5d33bc900829220f911fbbdabde3
+  version: 2d7eb4f050c25a6d4401af9abd939d42ac773331
 - name: github.com/opencontainers/go-digest
   version: aa2ec055abd10d26d539eb630a92241b781ce4bc
 - name: github.com/pkg/errors
-  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
+  version: ff09b135c25aae272398c51a07235b90a75aa4f0
 - name: github.com/Sirupsen/logrus
-  version: c078b1e43f58d563c74cebe63c85789e76ddb627
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/xenolf/lego
-  version: be23e242c130084523a262cd51c60af1a640391c
+  version: 0e2937900b224325f4476745a9b53aef246b7410
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: 453249f01cfeb54c3d549ddb75ff152ca243f9d8
+  version: 459e26527287adbc2adcc5d0d49abff9a5f315a7
   subpackages:
   - ocsp
 - name: golang.org/x/net
-  version: 61557ac0112b576429a0df080e1c2cef5dfbb642
+  version: a6577fac2d73be281a500b310739095313165611
   subpackages:
   - context
   - context/ctxhttp
   - proxy
   - publicsuffix
 - name: golang.org/x/sys
-  version: aaabbdc969c3935a2a7f61efac801e7163c73a2a
+  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
   subpackages:
   - unix
   - windows
@@ -74,6 +74,8 @@ imports:
   subpackages:
   - cipher
   - json
+- name: gopkg.in/yaml.v2
+  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
 - name: rsc.io/letsencrypt
   version: 76104d26167d38b6a0010f42bfc8ec5487742e8b
 testImports: []
