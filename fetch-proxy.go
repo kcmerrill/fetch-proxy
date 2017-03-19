@@ -20,6 +20,8 @@ func main() {
 	dev := flag.Bool("dev", false, "Disable health checks and HTTPS for dev envs")
 	timeout := flag.Int("response-timeout", 10, "The response timeout for the proxy")
 	defaultEndpoint := flag.String("default", "__default", "The default endpoint fetch-proxy uses when requested endpoing isn't found")
+	config := flag.String("config", "", "Location for the configuration file you want to use")
+
 	flag.Parse()
 
 	// Disable ssl/tls and health checks in dev mode
@@ -35,6 +37,10 @@ func main() {
 	go FetchProxyStart(*port, !*insecure, !*disableHealthChecks, *healthCheckURL, *defaultEndpoint)
 
 	go ContainerWatch(*containerized, !*disableHealthChecks, *healthCheckURL, *port)
+
+	if *config != "" {
+		go ConfigWatch(*config, *containerized, !*disableHealthChecks, *healthCheckURL)
+	}
 
 	// No need to shutdown the application _UNLESS_ we catch it
 	shutdown.WaitFor(syscall.SIGINT, syscall.SIGTERM)
