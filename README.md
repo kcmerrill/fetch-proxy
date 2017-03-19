@@ -1,5 +1,3 @@
-# fetch-proxy
-
 ![fetch-proxy](https://raw.githubusercontent.com/kcmerrill/fetch-proxy/master/assets/fetch.png "fetch-proxy")
 
 [![Build Status](https://travis-ci.org/kcmerrill/fetch-proxy.svg?branch=master)](https://travis-ci.org/kcmerrill/fetch-proxy) [![Join the chat at https://gitter.im/fetch-proxy/Lobby](https://badges.gitter.im/fetch-proxy/Lobby.svg)](https://gitter.im/fetch-proxy/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -18,7 +16,7 @@ Fetch is a simple proxy that automagically routes web traffic to running docker 
 
 ## Binaries || Installation
 
-[![MacOSX](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/apple_logo.png "Mac OSX")] (http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/mac/amd6) [![Linux](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/linux_logo.png "Linux")] (http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/linux/amd64)
+[![MacOSX](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/apple_logo.png "Mac OSX")](http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/mac/amd6) [![Linux](https://raw.githubusercontent.com/kcmerrill/go-dist/master/assets/linux_logo.png "Linux")](http://go-dist.kcmerrill.com/kcmerrill/fetch-proxy/linux/amd64)
 
 or via go:
 
@@ -36,7 +34,7 @@ By deploying containers with `_` in their names, this denotes different versions
 
 ## Custom Mappings
 
-Lets say you are not using docker images for some ports, or perhaps you need to map multiple subdomains to one particular port. Simply pass in the `config` flag, with a location to a config file. This will be used for more later, but for now, create a yaml file with a key of `forward` and as a multi dimensional array, pass in the `subdomain name: port`. Feel free to update this whenever you'd like, give fetch-proxy a few seconds to read in the new changes and then go to the new subdomain. Here is an example of multiple subdomains going to a single port:
+Lets say you are not using docker images for some ports, or perhaps you need to map multiple subdomains to one particular port. Simply pass in the `config` flag, with a location to a config file. This will be used for more later, but for now, create a yaml file with a key of `forward` and as a multi dimensional array, pass in the `subdomain: port`. Feel free to update this whenever you'd like, give fetch-proxy a few seconds to read in the new changes and then go to the new subdomain. Here is an example of multiple subdomains going to a single port:
 
 ```yaml
 forward:
