@@ -28,6 +28,10 @@ via docker:
 
 Use the `--insecure` flag if you are working on localhost, else enjoy `https://` urls from letsencrypt.org
 
+## Old version of docker
+
+If you're running fetch-proxy within a container(`kcmerrill/fetch-proxy`) with an older version of docker, add `-e DOCKER_API_VERSION=1.x.x` for compatability. 
+
 ## Zero downtime deployments
 
 By deploying containers with `_` in their names, this denotes different versions to `fetch-proxy` along with their start times. If you start a container called `test_v1.0`, test.domain.tld will route traffic to that specific container. If you launch another container named `test_v1.1` test.domain.tld will now start taking in that traffic once the container becomes online(via a healthcheck).
