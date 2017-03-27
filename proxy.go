@@ -20,6 +20,9 @@ var endpointkeys sort.StringSlice
 func passThrough(w http.ResponseWriter, r *http.Request, defaultEndpoint string) {
 	w.Header().Set("X-Fetch-Proxy", "v1.0")
 
+	// remove www.
+	r.Host = strings.TrimLeft(r.Host, "www.")
+
 	endpoint := siteKey(r.Host, defaultEndpoint)
 
 	log.WithFields(
