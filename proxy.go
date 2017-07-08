@@ -18,8 +18,6 @@ var endpointkeys sort.StringSlice
 
 // passThrough takes in traffic on specific port and passes it through to the appropriate endpoint
 func passThrough(w http.ResponseWriter, r *http.Request, defaultEndpoint string) {
-	w.Header().Set("X-Fetch-Proxy", "v1.0")
-
 	// remove www.
 	if strings.HasPrefix(r.Host, "www.") {
 		r.Host = strings.Replace(r.Host, "www.", "", 1)
