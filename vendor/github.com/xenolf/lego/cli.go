@@ -32,7 +32,7 @@ func main() {
 	app.Name = "lego"
 	app.Usage = "Let's Encrypt client written in Go"
 
-	version := "0.3.1"
+	version := "0.4.1"
 	if strings.HasPrefix(gittag, "v") {
 		version = gittag
 	}
@@ -109,7 +109,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringSliceFlag{
 			Name:  "domains, d",
-			Usage: "Add domains to the process",
+			Usage: "Add a domain to the process. Can be specified multiple times.",
 		},
 		cli.StringFlag{
 			Name:  "csr, c",
@@ -172,7 +172,7 @@ func main() {
 		},
 		cli.StringSliceFlag{
 			Name:  "dns-resolvers",
-			Usage: "Set the resolvers to use for performing recursive DNS queries. Supported: host:port. The default is to use Google's DNS resolvers.",
+			Usage: "Set the resolvers to use for performing recursive DNS queries. Supported: host:port. The default is to use the system resolvers, or Google's DNS resolvers if the system's cannot be determined.",
 		},
 		cli.BoolFlag{
 			Name:  "pem",
@@ -205,22 +205,23 @@ Here is an example bash command using the CloudFlare DNS provider:
 	fmt.Fprintln(w, "\tauroradns:\tAURORA_USER_ID, AURORA_KEY, AURORA_ENDPOINT")
 	fmt.Fprintln(w, "\tcloudflare:\tCLOUDFLARE_EMAIL, CLOUDFLARE_API_KEY")
 	fmt.Fprintln(w, "\tdigitalocean:\tDO_AUTH_TOKEN")
-	fmt.Fprintln(w, "\tdnsimple:\tDNSIMPLE_EMAIL, DNSIMPLE_API_KEY")
+	fmt.Fprintln(w, "\tdnsimple:\tDNSIMPLE_EMAIL, DNSIMPLE_OAUTH_TOKEN")
 	fmt.Fprintln(w, "\tdnsmadeeasy:\tDNSMADEEASY_API_KEY, DNSMADEEASY_API_SECRET")
 	fmt.Fprintln(w, "\texoscale:\tEXOSCALE_API_KEY, EXOSCALE_API_SECRET, EXOSCALE_ENDPOINT")
 	fmt.Fprintln(w, "\tgandi:\tGANDI_API_KEY")
-	fmt.Fprintln(w, "\tgcloud:\tGCE_PROJECT")
+	fmt.Fprintln(w, "\tgcloud:\tGCE_PROJECT, GCE_SERVICE_ACCOUNT_FILE")
 	fmt.Fprintln(w, "\tlinode:\tLINODE_API_KEY")
 	fmt.Fprintln(w, "\tmanual:\tnone")
 	fmt.Fprintln(w, "\tnamecheap:\tNAMECHEAP_API_USER, NAMECHEAP_API_KEY")
 	fmt.Fprintln(w, "\trackspace:\tRACKSPACE_USER, RACKSPACE_API_KEY")
 	fmt.Fprintln(w, "\trfc2136:\tRFC2136_TSIG_KEY, RFC2136_TSIG_SECRET,\n\t\tRFC2136_TSIG_ALGORITHM, RFC2136_NAMESERVER")
-	fmt.Fprintln(w, "\troute53:\tAWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION")
+	fmt.Fprintln(w, "\troute53:\tAWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_HOSTED_ZONE_ID")
 	fmt.Fprintln(w, "\tdyn:\tDYN_CUSTOMER_NAME, DYN_USER_NAME, DYN_PASSWORD")
 	fmt.Fprintln(w, "\tvultr:\tVULTR_API_KEY")
 	fmt.Fprintln(w, "\tovh:\tOVH_ENDPOINT, OVH_APPLICATION_KEY, OVH_APPLICATION_SECRET, OVH_CONSUMER_KEY")
 	fmt.Fprintln(w, "\tpdns:\tPDNS_API_KEY, PDNS_API_URL")
 	fmt.Fprintln(w, "\tdnspod:\tDNSPOD_API_KEY")
+	fmt.Fprintln(w, "\totc:\tOTC_USER_NAME, OTC_PASSWORD, OTC_PROJECT_NAME, OTC_DOMAIN_NAME, OTC_IDENTITY_ENDPOINT")
 	w.Flush()
 
 	fmt.Println(`

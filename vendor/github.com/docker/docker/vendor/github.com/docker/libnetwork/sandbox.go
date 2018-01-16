@@ -45,7 +45,7 @@ type Sandbox interface {
 	// EnableService  makes a managed container's service available by adding the
 	// endpoint to the service load balancer and service discovery
 	EnableService() error
-	// DisableService removes a managed contianer's endpoints from the load balancer
+	// DisableService removes a managed container's endpoints from the load balancer
 	// and service discovery
 	DisableService() error
 }
@@ -69,7 +69,7 @@ type sandbox struct {
 	id                 string
 	containerID        string
 	config             containerConfig
-	extDNS             []string
+	extDNS             []extDNSEntry
 	osSbox             osl.Sandbox
 	controller         *controller
 	resolver           Resolver
@@ -411,6 +411,13 @@ func (sb *sandbox) updateGateway(ep *endpoint) error {
 	return nil
 }
 
+func (sb *sandbox) HandleQueryResp(name string, ip net.IP) {
+	for _, ep := range sb.getConnectedEndpoints() {
+		n := ep.getNetwork()
+		n.HandleQueryResp(name, ip)
+	}
+}
+
 func (sb *sandbox) ResolveIP(ip string) string {
 	var svc string
 	logrus.Debugf("IP To resolve %v", ip)
@@ -637,13 +644,6 @@ func (sb *sandbox) SetKey(basePath string) error {
 	sb.Lock()
 	sb.osSbox = osSbox
 	sb.Unlock()
-	defer func() {
-		if err != nil {
-			sb.Lock()
-			sb.osSbox = nil
-			sb.Unlock()
-		}
-	}()
 
 	// If the resolver was setup before stop it and set it up in the
 	// new osl sandbox.
@@ -1165,6 +1165,17 @@ func (eh epHeap) Less(i, j int) bool {
 
 	if epj.getNetwork().Internal() {
 		return true
+	}
+
+	if epi.joinInfo != nil && epj.joinInfo != nil {
+		if (epi.joinInfo.gw != nil && epi.joinInfo.gw6 != nil) &&
+			(epj.joinInfo.gw == nil || epj.joinInfo.gw6 == nil) {
+			return true
+		}
+		if (epj.joinInfo.gw != nil && epj.joinInfo.gw6 != nil) &&
+			(epi.joinInfo.gw == nil || epi.joinInfo.gw6 == nil) {
+			return false
+		}
 	}
 
 	if ci != nil {

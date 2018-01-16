@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/kcmerrill/shutdown.go"
+	log "github.com/sirupsen/logrus"
 	"rsc.io/letsencrypt"
 )
 

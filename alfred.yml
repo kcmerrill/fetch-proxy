@@ -8,7 +8,7 @@ push:
 
 commit:
     summary: Commit to github
-    command: |
+    interactive: |
         git add .
         git commit
         git push origin master

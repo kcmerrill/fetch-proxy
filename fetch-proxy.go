@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/kcmerrill/shutdown.go"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {

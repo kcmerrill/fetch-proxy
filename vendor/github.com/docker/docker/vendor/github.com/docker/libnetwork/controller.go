@@ -47,6 +47,7 @@ import (
 	"container/heap"
 	"fmt"
 	"net"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -127,6 +128,9 @@ type NetworkController interface {
 	// Wait for agent initialization complete in libnetwork controller
 	AgentInitWait()
 
+	// Wait for agent to stop if running
+	AgentStopWait()
+
 	// SetKeys configures the encryption key for gossip and overlay data path
 	SetKeys(keys []*types.EncryptionKey) error
 }
@@ -160,6 +164,7 @@ type controller struct {
 	agent                  *agent
 	networkLocker          *locker.Locker
 	agentInitDone          chan struct{}
+	agentStopDone          chan struct{}
 	keys                   []*types.EncryptionKey
 	clusterConfigAvailable bool
 	sync.Mutex
@@ -273,7 +278,7 @@ func (c *controller) SetKeys(keys []*types.EncryptionKey) error {
 	}
 	for s, count := range subsysKeys {
 		if count != keyringSize {
-			return fmt.Errorf("incorrect number of keys for susbsystem %v", s)
+			return fmt.Errorf("incorrect number of keys for subsystem %v", s)
 		}
 	}
 
@@ -338,7 +343,12 @@ func (c *controller) clusterAgentInit() {
 			c.agentClose()
 			c.cleanupServiceBindings("")
 
-			c.clearIngress(true)
+			c.Lock()
+			if c.agentStopDone != nil {
+				close(c.agentStopDone)
+				c.agentStopDone = nil
+			}
+			c.Unlock()
 
 			return
 		}
@@ -354,6 +364,15 @@ func (c *controller) AgentInitWait() {
 
 	if agentInitDone != nil {
 		<-agentInitDone
+	}
+}
+
+func (c *controller) AgentStopWait() {
+	c.Lock()
+	agentStopDone := c.agentStopDone
+	c.Unlock()
+	if agentStopDone != nil {
+		<-agentStopDone
 	}
 }
 
@@ -588,7 +607,7 @@ func (c *controller) pushNodeDiscovery(d driverapi.Driver, cap driverapi.Capabil
 			err = d.DiscoverDelete(discoverapi.NodeDiscovery, nodeData)
 		}
 		if err != nil {
-			logrus.Debugf("discovery notification error : %v", err)
+			logrus.Debugf("discovery notification error: %v", err)
 		}
 	}
 }
@@ -682,6 +701,10 @@ func (c *controller) NewNetwork(networkType, name string, id string, options ...
 		return nil, err
 	}
 
+	if network.ingress && cap.DataScope != datastore.GlobalScope {
+		return nil, types.ForbiddenErrorf("Ingress network can only be global scope network")
+	}
+
 	if cap.DataScope == datastore.GlobalScope && !c.isDistributedControl() && !network.dynamic {
 		if c.isManager() {
 			// For non-distributed controlled environment, globalscoped non-dynamic networks are redirected to Manager
@@ -741,7 +764,9 @@ func (c *controller) NewNetwork(networkType, name string, id string, options ...
 
 	joinCluster(network)
 	if !c.isDistributedControl() {
+		c.Lock()
 		arrangeIngressFilterRule()
+		c.Unlock()
 	}
 
 	return network, nil
@@ -938,6 +963,7 @@ func (c *controller) NewSandbox(containerID string, options ...SandboxOption) (s
 			populatedEndpoints: map[string]struct{}{},
 			config:             containerConfig{},
 			controller:         c,
+			extDNS:             []extDNSEntry{},
 		}
 	}
 	sBox = sb
@@ -954,6 +980,8 @@ func (c *controller) NewSandbox(containerID string, options ...SandboxOption) (s
 
 	if sb.ingress {
 		c.ingressSandbox = sb
+		sb.config.hostsPath = filepath.Join(c.cfg.Daemon.DataDir, "/network/files/hosts")
+		sb.config.resolvConfPath = filepath.Join(c.cfg.Daemon.DataDir, "/network/files/resolv.conf")
 		sb.id = "ingress_sbox"
 	}
 	c.Unlock()
@@ -1003,7 +1031,7 @@ func (c *controller) NewSandbox(containerID string, options ...SandboxOption) (s
 
 	err = sb.storeUpdate()
 	if err != nil {
-		return nil, fmt.Errorf("updating the store state of sandbox failed: %v", err)
+		return nil, fmt.Errorf("failed to update the store state of sandbox: %v", err)
 	}
 
 	return sb, nil
@@ -1093,7 +1121,7 @@ func (c *controller) loadDriver(networkType string) error {
 	var err error
 
 	if pg := c.GetPluginGetter(); pg != nil {
-		_, err = pg.Get(networkType, driverapi.NetworkPluginEndpointType, plugingetter.LOOKUP)
+		_, err = pg.Get(networkType, driverapi.NetworkPluginEndpointType, plugingetter.Lookup)
 	} else {
 		_, err = plugins.Get(networkType, driverapi.NetworkPluginEndpointType)
 	}
@@ -1112,7 +1140,7 @@ func (c *controller) loadIPAMDriver(name string) error {
 	var err error
 
 	if pg := c.GetPluginGetter(); pg != nil {
-		_, err = pg.Get(name, ipamapi.PluginEndpointType, plugingetter.LOOKUP)
+		_, err = pg.Get(name, ipamapi.PluginEndpointType, plugingetter.Lookup)
 	} else {
 		_, err = plugins.Get(name, ipamapi.PluginEndpointType)
 	}
@@ -1146,32 +1174,7 @@ func (c *controller) getIPAMDriver(name string) (ipamapi.Ipam, *ipamapi.Capabili
 }
 
 func (c *controller) Stop() {
-	c.clearIngress(false)
 	c.closeStores()
 	c.stopExternalKeyListener()
 	osl.GC()
-}
-
-func (c *controller) clearIngress(clusterLeave bool) {
-	c.Lock()
-	ingressSandbox := c.ingressSandbox
-	c.ingressSandbox = nil
-	c.Unlock()
-
-	if ingressSandbox != nil {
-		if err := ingressSandbox.Delete(); err != nil {
-			logrus.Warnf("Could not delete ingress sandbox while leaving: %v", err)
-		}
-	}
-
-	n, err := c.NetworkByName("ingress")
-	if err != nil && clusterLeave {
-		logrus.Warnf("Could not find ingress network while leaving: %v", err)
-	}
-
-	if n != nil {
-		if err := n.Delete(); err != nil {
-			logrus.Warnf("Could not delete ingress network while leaving: %v", err)
-		}
-	}
 }

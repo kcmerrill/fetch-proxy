@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	log "github.com/sirupsen/logrus"
 )
 
 // ContainerWatch checks for new containers and if they exist, add the sites and it's endpoints

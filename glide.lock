@@ -1,22 +1,23 @@
-hash: 31181df411377ee898d7aea6f30b09c44863496fa7dae3ad982ba7559c624263
-updated: 2017-03-19T16:20:18.797262563-06:00
+hash: ab66119832cf1e6a6d974d28a477aad85e621ba177383ecadeb420a85462ac4a
+updated: 2018-01-16T11:45:09.405508-07:00
 imports:
 - name: github.com/docker/distribution
-  version: 08b06dc023674763e7b36d404cf0c7664cee1f5e
+  version: 277ed486c948042cab91ad367c379524f3b25e18
   subpackages:
   - digestset
   - reference
 - name: github.com/docker/docker
-  version: 3476dbfb369a05aff504826721704f192a3f2788
+  version: 90d35abf7b3535c1c319c872900fbd76374e521c
   subpackages:
+  - api
   - api/types
   - api/types/blkiodev
   - api/types/container
   - api/types/events
   - api/types/filters
+  - api/types/image
   - api/types/mount
   - api/types/network
-  - api/types/reference
   - api/types/registry
   - api/types/strslice
   - api/types/swarm
@@ -24,49 +25,65 @@ imports:
   - api/types/versions
   - api/types/volume
   - client
+  - pkg/ioutils
+  - pkg/longpath
+  - pkg/system
   - pkg/tlsconfig
 - name: github.com/docker/go-connections
-  version: a2afab9802043837035592f1c24827fb70766de9
+  version: 3ede32e2033de7505e6500d6c868c2b9ed9f169d
   subpackages:
   - nat
   - sockets
   - tlsconfig
 - name: github.com/docker/go-units
-  version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
+  version: d59758554a3d3911fa25c0269de1ebe2f1912c39
+- name: github.com/docker/libtrust
+  version: aabc10ec26b754e797f9028f4589c5b7bd90dc20
 - name: github.com/kcmerrill/shutdown.go
   version: 908c645a50e570c7813e9fc79f5f1a0966f738e6
 - name: github.com/Microsoft/go-winio
-  version: fff283ad5116362ca252298cfc9b95828956d85d
+  version: b7c3cf0d1286c7b62b140ed960a00b154c1b6fcc
 - name: github.com/miekg/dns
-  version: 2d7eb4f050c25a6d4401af9abd939d42ac773331
+  version: f5ac34d755eb6975958108413c7802a782ca16c8
 - name: github.com/opencontainers/go-digest
-  version: aa2ec055abd10d26d539eb630a92241b781ce4bc
+  version: 279bed98673dd5bef374d3b6e4b09e2af76183bf
 - name: github.com/pkg/errors
-  version: ff09b135c25aae272398c51a07235b90a75aa4f0
+  version: e881fd58d78e04cf6d0de1217f8707c8cc2249bc
 - name: github.com/Sirupsen/logrus
-  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+  version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
+  repo: git@github.com:/sirupsen/logrus
+  vcs: git
+- name: github.com/sirupsen/logrus
+  version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
 - name: github.com/xenolf/lego
-  version: 0e2937900b224325f4476745a9b53aef246b7410
+  version: cc326ce155a7916c7a784aafb3c845722a4da698
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: 459e26527287adbc2adcc5d0d49abff9a5f315a7
+  version: 13931e22f9e72ea58bb73048bc752b48c6d4d4ac
   subpackages:
+  - ed25519
+  - ed25519/internal/edwards25519
   - ocsp
+  - ssh/terminal
 - name: golang.org/x/net
-  version: a6577fac2d73be281a500b310739095313165611
+  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
   subpackages:
+  - bpf
   - context
   - context/ctxhttp
+  - internal/iana
+  - internal/socket
+  - ipv4
+  - ipv6
   - proxy
-  - publicsuffix
 - name: golang.org/x/sys
-  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
+  version: fff93fa7cd278d84afc205751523809c464168ab
   subpackages:
   - unix
   - windows
 - name: golang.org/x/time
-  version: f51c12702a4d776e4c1fa9b0fabab841babae631
+  version: 6dc17368e09b0e8634d71cac8168d853e869a0c7
   subpackages:
   - rate
 - name: gopkg.in/square/go-jose.v1
@@ -75,7 +92,7 @@ imports:
   - cipher
   - json
 - name: gopkg.in/yaml.v2
-  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
+  version: d670f9405373e636a5a2765eea47fac0c9bc91a4
 - name: rsc.io/letsencrypt
-  version: 76104d26167d38b6a0010f42bfc8ec5487742e8b
+  version: 33926faef6d434b854ea994228f11d0185faa0c1
 testImports: []

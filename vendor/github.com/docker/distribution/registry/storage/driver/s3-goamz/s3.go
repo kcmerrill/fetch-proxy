@@ -14,6 +14,7 @@ package s3
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -23,14 +24,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/goamz/aws"
-	"github.com/docker/goamz/s3"
-
-	"github.com/docker/distribution/context"
 	"github.com/docker/distribution/registry/client/transport"
 	storagedriver "github.com/docker/distribution/registry/storage/driver"
 	"github.com/docker/distribution/registry/storage/driver/base"
 	"github.com/docker/distribution/registry/storage/driver/factory"
+	"github.com/docker/goamz/aws"
+	"github.com/docker/goamz/s3"
 )
 
 const driverName = "s3goamz"
@@ -553,11 +552,6 @@ func parseError(path string, err error) error {
 	}
 
 	return err
-}
-
-func hasCode(err error, code string) bool {
-	s3err, ok := err.(*aws.Error)
-	return ok && s3err.Code == code
 }
 
 func (d *driver) getOptions() s3.Options {

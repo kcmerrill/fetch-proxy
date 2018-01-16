@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Endpoint struct containing everything needed for a new endpoint
