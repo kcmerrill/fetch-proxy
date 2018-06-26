@@ -1,11 +1,13 @@
 push:
     summary: Push latest revision
+    tasks: status ok commit docker.build docker.push
+
+ok:
+    prompt:
+        ok: Everything look ok? Ctrl+C to bail
+status:
     command: |
         git status
-        echo "Everything look ok?"
-        readline ok
-    tasks: commit docker.build docker.push
-
 commit:
     summary: Commit to github
     interactive: true
